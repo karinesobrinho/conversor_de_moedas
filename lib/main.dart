@@ -9,19 +9,24 @@ void main() async {
   print(await getData());
 
   runApp(MaterialApp(
-    title: 'Conversor de moedas', 
+    title: 'Conversor de moedas',
     home: Home(),
     theme: ThemeData(
-      hintColor: Colors.amber,
-      primaryColor: Colors.white,
-      inputDecorationTheme: InputDecorationTheme(
-        enabledBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        focusedBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
-        hintStyle: TextStyle(color: Colors.amber),
-      )),
-    ));
+        hintColor: Colors.amber,
+        primaryColor: Colors.white,
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder:
+              OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+          focusedBorder:
+              OutlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+          hintStyle: TextStyle(color: Colors.amber),
+        )),
+  ));
+}
+
+Future<Map> getData() async {
+  http.Response response = await http.get(request);
+  return json.decode(response.body);
 }
 
 class Home extends StatefulWidget {
@@ -60,8 +65,7 @@ class _HomeState extends State<Home> {
                   return Center(
                     child: Text(
                       'Erro ao carregar dados',
-                      style:
-                          TextStyle(color: Colors.amber, fontSize: 25.0),
+                      style: TextStyle(color: Colors.amber, fontSize: 25.0),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -69,43 +73,19 @@ class _HomeState extends State<Home> {
                   dolar = snapshot.data['results']['currencies']['USD']['buy'];
                   euro = snapshot.data['results']['currencies']['EUR']['buy'];
                   return SingleChildScrollView(
-                    padding: EdgeInsets.all(10.0),
-                    child: Column( 
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.monetization_on, size: 150.0, color: Colors.amber),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Reais',
-                            labelStyle: TextStyle(color: Colors.amber),
-                            border: OutlineInputBorder(),
-                            prefixText: 'R\$',
-                          ),
-                          style: TextStyle(fontSize: 35.0, color: Colors.amber) ,
-                        ),
-                        Divider(),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Dolares',
-                            labelStyle: TextStyle(color: Colors.amber),
-                            border: OutlineInputBorder(),
-                            prefixText: 'US\$',
-                          ),
-                          style: TextStyle(fontSize: 35.0, color: Colors.amber) ,
-                        ),
-                        Divider(),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Euros',
-                            labelStyle: TextStyle(color: Colors.amber),
-                            border: OutlineInputBorder(),
-                            prefixText: '€',
-                          ),
-                          style: TextStyle(fontSize: 35.0, color: Colors.amber) ,
-                        ),
-                    ],
-                  )
-                  );
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.monetization_on,
+                              size: 150.0, color: Colors.amber),
+                          buildTextField('Reais', 'R\$'),
+                          Divider(),
+                          buildTextField('Dolares', 'US\$'),
+                          Divider(),
+                          buildTextField('Euros', '€'),
+                        ],
+                      ));
                 }
             }
           }),
@@ -113,7 +93,14 @@ class _HomeState extends State<Home> {
   }
 }
 
-Future<Map> getData() async {
-  http.Response response = await http.get(request);
-  return json.decode(response.body);
+Widget buildTextField(String label, String prefix) {
+  return TextField(
+    decoration: InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: Colors.amber),
+      border: OutlineInputBorder(),
+      prefixText: prefix,
+    ),
+    style: TextStyle(fontSize: 35.0, color: Colors.amber),
+  );
 }
