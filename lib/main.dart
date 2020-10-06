@@ -35,6 +35,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
   final realController = TextEditingController();
   final dollarController = TextEditingController();
   final euroController = TextEditingController();
@@ -139,6 +140,7 @@ class _HomeState extends State<Home> {
 Widget buildTextField(
     String label, String prefix, TextEditingController valor, Function f) {
   return TextField(
+    controller: valor,
     decoration: InputDecoration(
       labelText: label,
       labelStyle: TextStyle(color: Colors.amber),
