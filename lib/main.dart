@@ -39,17 +39,43 @@ class _HomeState extends State<Home> {
   final dollarController = TextEditingController();
   final euroController = TextEditingController();
 
-  double dolar;
+  double dollar;
   double euro;
 
-  void _realChanged(String text) {
-    print(text);
+  void _clearAll(){
+    realController.text = "";
+    dollarController.text = "";
+    euroController.text = "";
   }
-  void _dollarChanged(String text) {
-    print(text);
+
+  void _realChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double real = double.parse(text);
+    dollarController.text = (real/dollar).toStringAsFixed(2);
+    euroController.text = (real/euro).toStringAsFixed(2);
   }
-  void _euroChanged(String text) {
-    print(text);
+ 
+  void _dollarChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double dollar = double.parse(text);
+    realController.text = (dollar * this.dollar).toStringAsFixed(2);
+    euroController.text = (dollar * this.dollar / euro).toStringAsFixed(2);
+  }
+ 
+  void _euroChanged(String text){
+    if(text.isEmpty) {
+      _clearAll();
+      return;
+    }
+    double euro = double.parse(text);
+    realController.text = (euro * this.euro).toStringAsFixed(2);
+    dollarController.text = (euro * this.euro / dollar).toStringAsFixed(2);
   }
 
   @override
@@ -84,7 +110,7 @@ class _HomeState extends State<Home> {
                     ),
                   );
                 } else {
-                  dolar = snapshot.data['results']['currencies']['USD']['buy'];
+                  dollar = snapshot.data['results']['currencies']['USD']['buy'];
                   euro = snapshot.data['results']['currencies']['EUR']['buy'];
                   return SingleChildScrollView(
                       padding: EdgeInsets.all(10.0),
@@ -94,10 +120,10 @@ class _HomeState extends State<Home> {
                           Icon(Icons.monetization_on,
                               size: 150.0, color: Colors.amber),
                           buildTextField(
-                              'Reais', 'R\$', realController, _realChanged),
+                            'Reais', 'R\$', realController, _realChanged),
                           Divider(),
-                          buildTextField('Dolares', 'US\$', dollarController,
-                              _dollarChanged),
+                          buildTextField(
+                            'Dolares', 'US\$', dollarController, _dollarChanged),
                           Divider(),
                           buildTextField(
                               'Euros', '€', euroController, _euroChanged),
